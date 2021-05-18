@@ -10,7 +10,7 @@ void* multiplicaPor10 (void* dta){
 }
 
 int main() {
-  int id,r,param = 2;
+  int id,*r,param = 2;
   start(2);
 
   Atrib escalonamento;
@@ -22,7 +22,7 @@ int main() {
   sync(id, (void**) &r);
   finish();
 
-  printf("R main : %d\n", r);
+  printf("R main : %d\n", *r);
 
   return 0;
 }

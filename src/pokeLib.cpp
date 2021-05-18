@@ -163,6 +163,7 @@ tarefa*/
       }
     }
   }
+  *res = aux->resultado;
   return 1;
   printf("Sync\n");
 }
