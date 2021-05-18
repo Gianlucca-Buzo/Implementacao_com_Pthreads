@@ -148,13 +148,15 @@ tarefa*/
   if (aux == NULL)
   {
     aux = pegaUmTrabalhoPorID(tId, prontos);
-    if (aux!= NULL){
+    if (aux != NULL)
+    {
       executa(aux);
     }
     else
     {
       aux = pegaUmTrabalho(prontos);
-      if (aux!=NULL){
+      if (aux != NULL)
+      {
         executa(aux);
       }
       else
@@ -162,8 +164,9 @@ tarefa*/
         return 0;
       }
     }
+
+    *res = aux->resultado;
+    return 1;
+    printf("Sync\n");
   }
-  *res = aux->resultado;
-  return 1;
-  printf("Sync\n");
 }
