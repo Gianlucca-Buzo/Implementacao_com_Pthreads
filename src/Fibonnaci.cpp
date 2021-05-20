@@ -56,5 +56,6 @@ int main()
 	printf("fim");
 	printf("Fibonacci (%d) = %d \n", n, *r);
 
+	free(r);//adicionei essa linha
 	return 0;
 }

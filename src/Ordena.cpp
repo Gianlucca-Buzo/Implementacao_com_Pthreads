@@ -1,23 +1,40 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <malloc.h>
 #include <iostream>
 #include "pokeLib.h"
 
+// number of elements in array
+#define MAX 30
 void* mergeSort( void* dta )//int *vetor, int posicaoInicio, int posicaoFim)
 {
-  void *aux = dta;
-  int* posicaoInicio = (int*) dta;
-  int* posicaoFim = (int*) dta + 4;
-  //int len = sizeof(vetor)/sizeof(int);
+  int *vetor = (int*)(dta + (2*sizeof(int)));
+  int *aux = (int*)dta;
+  int posicaoInicio = aux[0];
+  int posicaoFim = aux[1];
+
+  struct Atrib a1, a2;
+  int t1, t2;
+  int *r = (int *)malloc(sizeof(int));
 
   int i, j, k, metadeTamanho, *vetorTemp;
   if (posicaoInicio == posicaoFim)
-    return;
-  metadeTamanho = (posicaoInicio + posicaoFim) / 2;
+    return 0;
+  metadeTamanho = (posicaoInicio + (posicaoFim)) / 2;
+  aux[1] = metadeTamanho;
+  //mergeSort(vetor, posicaoInicio, metadeTamanho);
+  //mergeSort(dta);
+  t1 = spawn(&a1, mergeSort, (void *)dta);
+  sync(t1, (void **)&r);
 
-  mergeSort(vetor, posicaoInicio, metadeTamanho);
-  mergeSort(vetor, metadeTamanho + 1, posicaoFim);
-
+  aux[0] = metadeTamanho + 1 ;
+  aux[1] = posicaoFim;
+  //mergeSort(dta);
+  t2 = spawn(&a2, mergeSort, (void *)dta);
+  sync(t2, (void **)&r);
+  //mergeSort(vetor, metadeTamanho + 1, posicaoFim);
+  printf("R1 : %d\n", r);
+  //free(r);
   i = posicaoInicio;
   j = metadeTamanho + 1;
   k = 0;
@@ -65,28 +82,42 @@ void* mergeSort( void* dta )//int *vetor, int posicaoInicio, int posicaoFim)
 
 int main()
 {
-  void *dta, *aux;
+  int *vetor = (int *)malloc((MAX+2) * (sizeof(int)));
+  vetor[0] = 0;
+  vetor[1] = MAX;
 
-  int *vetor = (int *)malloc(10 * (sizeof(int)));
-  for (int i = 0; i < 10; i++)
+  for (int i = 2; i < MAX+2; i++)
   {
-    vetor[i]= rand() % 10;
+    vetor[i]= rand() % 100;
   }
-  
-  
-  int n, *r, tId;
-	struct Atrib a;
-	start(4);
-	//n = 3;
-	printf("Digite o Valor do Fibonacci a ser calculado: ");
-	scanf("%d",&n);
-	a.p = 0;
-	a.c = n;
-	tId = spawn(&a, mergeSort, &n);
-	sync(tId, (void **)&r);
-	finish();
-	printf("fim");
-	printf("Fibonacci (%d) = %d \n", n, *r);
-  
+  for (int i = 0; i < MAX+2; i++)
+  {
+    printf("%d, ", vetor[i]);
+   
+  }
+  printf("\n");
+  int id, *r;
+  start(4);
+
+  Atrib escalonamento;
+  escalonamento.p = 0;
+  escalonamento.c = 0;
+
+  id = spawn(&escalonamento, mergeSort, vetor);
+  printf("spaw ID main: %d \n", id);
+  sync(id, (void **)&r);
+  finish();
+
+  //mergeSort(vetor);
+
+  for (int i = 0; i < MAX+2; i++)
+  {
+    printf("%d, ", vetor[i]);
+   
+  }
+  printf("\n");
+  free(vetor);
+  free(r);
+
   return 0;
 }
