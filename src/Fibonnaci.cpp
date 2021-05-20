@@ -17,6 +17,8 @@ void *fibo(void *dta)
 	else
 	{
 		n1 = (int *)malloc(sizeof(int));
+		r1 = (int *)malloc(sizeof(int));
+		r2 = (int *)malloc(sizeof(int));
 		*n1 = (*n) - 1;
 		a1.p = 0;
 		a1.c = *n1;
@@ -26,8 +28,8 @@ void *fibo(void *dta)
 		a2.p = 0;
 		a1.c = *n2;
 		t2 = spawn(&a2, fibo, (void *)n2);
-		printf("Retorno do sync 1: %d \n", sync(t1, (void **)&r1));
-		printf("Retorno do sinc 2: %d \n", sync(t2, (void **)&r2));
+		sync(t1, (void **)&r1);
+		sync(t2, (void **)&r2);
 		printf("%p\n %p ", r1, r2);
 		*r = *r1 + *r2;
 		free(r1);
@@ -52,7 +54,7 @@ int main()
 	sync(tId, (void **)&r);
 	finish();
 	printf("fim");
-	printf("Fibonacci (%d) = %d \n", n, *r); //Ponto de possível erro*/
+	printf("Fibonacci (%d) = %d \n", n, *r);
 
 	return 0;
 }
