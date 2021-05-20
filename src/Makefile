@@ -1,6 +1,6 @@
-executaFibonacci : fibonacci
-	./fibonacci
+executa: main
+	./main
 
-fibonacci : Fibonnaci.cpp pokeLib.h
-	g++ Fibonnaci.cpp pokeLib.cpp -lpthread -o fibonacci
+main : main.cpp pokeLib.h
+	g++ main.cpp pokeLib.cpp -lpthread -o main
 
