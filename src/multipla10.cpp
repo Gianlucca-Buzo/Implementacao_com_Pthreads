@@ -13,7 +13,7 @@ void *multiplicaPor10(void *dta)
 int main()
 {
   int id, *r, param = 2;
-  start(2);
+  start(5, 1);
 
   Atrib escalonamento;
   escalonamento.p = 0;

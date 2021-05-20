@@ -9,7 +9,7 @@ programador.*/
 	int c;
 };
 
-int start (int m);
+int start (int m, int escalonamento);
 void finish(void);
 int spawn( struct Atrib* atrib, void *(*t) (void *), void* dta );
 int sync( int tId, void** res );

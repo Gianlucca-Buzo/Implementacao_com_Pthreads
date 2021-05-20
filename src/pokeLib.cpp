@@ -21,6 +21,7 @@ list<trabalho *>::iterator it;
 pthread_mutex_t mutexTiraDaLista, mutexColocaNaLista, mutexIncrementaId = PTHREAD_MUTEX_INITIALIZER;
 bool finaliza = false;
 int idTrabalhoAtual = 1;
+int opEscalonamento;
 
 trabalho *pegaUmTrabalhoPorID(int id, list<trabalho *> lista)
 {
@@ -78,13 +79,14 @@ void *criaProcessadorVirtual(void *dta)
   }
 }
 
-int start(int m)
+int start(int m, int escalonamento)
 {
   /*Esta primitiva lança o núcleo de execução, instanciando m processadores virtuais,
   indicados pelo parâmetro m. O retorno 0 (zero) indica falha na instanciação dos
   processadores virtuais.Um valor maior que 0 indica criação bem sucedida.*/
   printf("Start %d\n", m);
   quantidadeProcessadoresVirtuais = m;
+  opEscalonamento = escalonamento;
   processadoresVirtuais = (pthread_t *)malloc(m * sizeof(pthread_t));
   for (int i = 0; i < m; i++)
   {
