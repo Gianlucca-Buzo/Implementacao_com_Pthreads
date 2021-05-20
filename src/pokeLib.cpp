@@ -5,6 +5,7 @@
 #include <list>
 #include <iterator>
 using namespace std;
+int opEscalonamento;
 
 struct trabalho
 {
