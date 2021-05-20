@@ -97,7 +97,7 @@ int main()
   }
   printf("\n");
   int id, *r;
-  start(4);
+  start(4,0);
 
   Atrib escalonamento;
   escalonamento.p = 0;
