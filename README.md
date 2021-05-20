@@ -25,6 +25,8 @@
 - Fora os algoritmos, o que mais podemos fazer para os pontos extras?
 
 ## TO DO
+* fazer escalonamento de pilha
+* arrumar os mutex
 * Fazer o makefile
 * fazer o readme
 * fazer o pdf
