@@ -18,44 +18,44 @@ static int quantidadeProcessadoresVirtuais = 0;
 static pthread_t *processadoresVirtuais;
 list<trabalho *> prontos, terminados;
 list<trabalho *>::iterator it;
-pthread_mutex_t mutexTiraDaLista, mutexColocaNaLista, mutexIncrementaId = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutexProntos, mutexTerminados = PTHREAD_MUTEX_INITIALIZER;
 bool finaliza = false;
 int idTrabalhoAtual = 1;
 int opEscalonamento;
 
-trabalho *pegaUmTrabalhoPorID(int id, list<trabalho *> lista)
+trabalho *pegaUmTrabalhoPorID(int id, list<trabalho *> lista, pthread_mutex_t mutexLista)
 {
   trabalho *retorno;
-  pthread_mutex_lock(&mutexTiraDaLista);
+  pthread_mutex_lock(&mutexLista);
   for (it = lista.begin(); it != lista.end(); ++it)
   {
     if ((*it)->idTrabalho == id)
     {
       retorno = *it;
       lista.erase(it);
-      pthread_mutex_unlock(&mutexTiraDaLista);
+      pthread_mutex_unlock(&mutexLista);
       return retorno;
     }
   }
-  pthread_mutex_unlock(&mutexTiraDaLista);
+  pthread_mutex_unlock(&mutexLista);
   return NULL;
 }
 
 trabalho *pegaUmTrabalho(list<trabalho *> lista)
 {
-  pthread_mutex_lock(&mutexTiraDaLista);
+  pthread_mutex_lock(&mutexProntos);
   trabalho *trabalhoRetorno = lista.front();
   lista.pop_front();
-  pthread_mutex_unlock(&mutexTiraDaLista);
+  pthread_mutex_unlock(&mutexProntos);
   return trabalhoRetorno;
 }
 
 void armazenaResultados(trabalho *trabalhoResultado, void *resultadoT)
 {
   trabalhoResultado->resultado = resultadoT;
-  pthread_mutex_lock(&mutexColocaNaLista);
+  pthread_mutex_lock(&mutexTerminados);
   terminados.push_back(trabalhoResultado);
-  pthread_mutex_unlock(&mutexColocaNaLista);
+  pthread_mutex_unlock(&mutexTerminados);
 }
 
 void executa(trabalho *trabalhoAtual)
@@ -120,17 +120,14 @@ tarefa ou um valor inteiro positivo maior que 0, considerado o identificador ún
 da tarefa no programa. Caso NULL seja passado como endereço para atrib, devem ser 
 considerados os valores default para os atributos.*/
   trabalho *novoTrabalho = (trabalho *)malloc(sizeof(trabalho));
-  pthread_mutex_lock(&mutexIncrementaId);
+  pthread_mutex_lock(&mutexProntos);
   novoTrabalho->idTrabalho = idTrabalhoAtual;
   idTrabalhoAtual++; //Incrementa a variável global que faz a contagem dos valores dos IDs
   novoTrabalho->funcao = t;
-  novoTrabalho->parametrosFuncao = dta;
-  pthread_mutex_unlock(&mutexIncrementaId);
-  //Adiciona elemento na lista prontos
-  pthread_mutex_lock(&mutexColocaNaLista);
+  novoTrabalho->parametrosFuncao = dta;  
   prontos.push_back(novoTrabalho);
   printf("spaw lib: %d \n", novoTrabalho->idTrabalho);
-  pthread_mutex_unlock(&mutexColocaNaLista);
+  pthread_mutex_unlock(&mutexProntos);
 
   return novoTrabalho->idTrabalho;
 }
@@ -146,10 +143,10 @@ tarefa*/
   trabalho *aux;
   printf("tId: %d: \n", tId);
 
-  aux = pegaUmTrabalhoPorID(tId, terminados); // Retorna o trabalho ou null se não encontrar
+  aux = pegaUmTrabalhoPorID(tId, terminados, mutexTerminados); // Retorna o trabalho ou null se não encontrar
   if (aux == NULL)
   {
-    aux = pegaUmTrabalhoPorID(tId, prontos);
+    aux = pegaUmTrabalhoPorID(tId, prontos, mutexProntos);
     if (aux != NULL)
     {
       executa(aux);
@@ -171,4 +168,4 @@ tarefa*/
     return 1;
     printf("Sync\n");
   }
-}
+}  
