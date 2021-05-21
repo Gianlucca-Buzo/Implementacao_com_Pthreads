@@ -108,8 +108,6 @@ int main()
   sync(id, (void **)&r);
   finish();
 
-  //mergeSort(vetor);
-
   for (int i = 0; i < MAX+2; i++)
   {
     printf("%d, ", vetor[i]);
