@@ -54,7 +54,16 @@ void armazenaResultados(trabalho *trabalhoResultado, void *resultadoT)
 {
   trabalhoResultado->resultado = resultadoT;
   pthread_mutex_lock(&mutexTerminados);
-  terminados.push_back(trabalhoResultado);
+
+  switch (opEscalonamento)
+  {
+  case 1:
+  terminados.push_front(trabalhoResultado); //pilha
+    break;
+  default:
+  terminados.push_back(trabalhoResultado); //fila
+    break;
+  }
   pthread_mutex_unlock(&mutexTerminados);
 }
 
@@ -125,7 +134,15 @@ considerados os valores default para os atributos.*/
   idTrabalhoAtual++; //Incrementa a variável global que faz a contagem dos valores dos IDs
   novoTrabalho->funcao = t;
   novoTrabalho->parametrosFuncao = dta;  
-  prontos.push_back(novoTrabalho);
+  switch (opEscalonamento)
+  {
+  case 1:
+    prontos.push_front(novoTrabalho); //pilha
+    break;
+  default:
+    prontos.push_front(novoTrabalho); //fila
+    break;
+  }
   printf("spaw lib: %d \n", novoTrabalho->idTrabalho);
   pthread_mutex_unlock(&mutexProntos);
 
