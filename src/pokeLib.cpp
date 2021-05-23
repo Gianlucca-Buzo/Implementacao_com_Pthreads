@@ -14,64 +14,72 @@ struct trabalho
   void *resultado;         // Retorno da função
 };
 
-static int quantidadeProcessadoresVirtuais = 0;
-static pthread_t *processadoresVirtuais;
+int quantidadeProcessadoresVirtuais = 0;
+pthread_t *processadoresVirtuais;
 list<trabalho *> prontos, terminados;
 list<trabalho *>::iterator it;
-pthread_mutex_t mutexProntos, mutexTerminados = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutexProntos = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutexTerminados = PTHREAD_MUTEX_INITIALIZER;
 bool finaliza = false;
 int idTrabalhoAtual = 1;
-int opEscalonamento;
+int opEscalonamento = 0;
 
-trabalho *pegaUmTrabalhoPorID(int id, list<trabalho *> lista, pthread_mutex_t mutexLista)
+trabalho *pegaUmTrabalhoPorID(int id, list<trabalho *> lista)
 {
+  if (lista.empty())
+  {
+    return NULL;
+  }
   trabalho *retorno;
-  pthread_mutex_lock(&mutexLista);
   for (it = lista.begin(); it != lista.end(); ++it)
   {
+    if (*it == NULL)
+    {
+      return NULL;
+    }
+    printf("aaaaa %d\n", (*it)->idTrabalho);
     if ((*it)->idTrabalho == id)
     {
       retorno = *it;
       lista.erase(it);
-      pthread_mutex_unlock(&mutexLista);
       return retorno;
     }
   }
-  pthread_mutex_unlock(&mutexLista);
   return NULL;
 }
 
 trabalho *pegaUmTrabalho(list<trabalho *> lista)
 {
-  pthread_mutex_lock(&mutexProntos);
+  if (lista.empty())
+  {
+    return NULL;
+  }
   trabalho *trabalhoRetorno = lista.front();
   lista.pop_front();
-  pthread_mutex_unlock(&mutexProntos);
   return trabalhoRetorno;
 }
 
 void armazenaResultados(trabalho *trabalhoResultado, void *resultadoT)
 {
   trabalhoResultado->resultado = resultadoT;
-  pthread_mutex_lock(&mutexTerminados);
-
   switch (opEscalonamento)
   {
   case 1:
-  terminados.push_front(trabalhoResultado); //pilha
+    terminados.push_front(trabalhoResultado); //pilha
     break;
   default:
-  terminados.push_back(trabalhoResultado); //fila
+    terminados.push_back(trabalhoResultado); //fila
     break;
   }
-  pthread_mutex_unlock(&mutexTerminados);
 }
 
 void executa(trabalho *trabalhoAtual)
 {
   void *resultado;
   resultado = trabalhoAtual->funcao(trabalhoAtual->parametrosFuncao);
+  pthread_mutex_lock(&mutexTerminados);
   armazenaResultados(trabalhoAtual, resultado);
+  pthread_mutex_unlock(&mutexTerminados);
 }
 
 void *criaProcessadorVirtual(void *dta)
@@ -93,7 +101,7 @@ int start(int m, int escalonamento)
   /*Esta primitiva lança o núcleo de execução, instanciando m processadores virtuais,
   indicados pelo parâmetro m. O retorno 0 (zero) indica falha na instanciação dos
   processadores virtuais.Um valor maior que 0 indica criação bem sucedida.*/
-  printf("Start %d\n", m);
+  //printf("Start %d\n", m);
   quantidadeProcessadoresVirtuais = m;
   opEscalonamento = escalonamento;
   processadoresVirtuais = (pthread_t *)malloc(m * sizeof(pthread_t));
@@ -133,7 +141,7 @@ considerados os valores default para os atributos.*/
   novoTrabalho->idTrabalho = idTrabalhoAtual;
   idTrabalhoAtual++; //Incrementa a variável global que faz a contagem dos valores dos IDs
   novoTrabalho->funcao = t;
-  novoTrabalho->parametrosFuncao = dta;  
+  novoTrabalho->parametrosFuncao = dta;
   switch (opEscalonamento)
   {
   case 1:
@@ -143,7 +151,7 @@ considerados os valores default para os atributos.*/
     prontos.push_front(novoTrabalho); //fila
     break;
   }
-  printf("spaw lib: %d \n", novoTrabalho->idTrabalho);
+  // printf("spaw lib: %d \n", novoTrabalho->idTrabalho);
   pthread_mutex_unlock(&mutexProntos);
 
   return novoTrabalho->idTrabalho;
@@ -158,19 +166,26 @@ como saída, o endereço de memória que contém os resultados de saída. Import
 tarefa somente pode ser sincroniza uma única vez. Não é permitido múltiplos syncs de uma mesma
 tarefa*/
   trabalho *aux;
-  printf("tId: %d: \n", tId);
+  //printf("tId: %d: \n", tId);
 
-  aux = pegaUmTrabalhoPorID(tId, terminados, mutexTerminados); // Retorna o trabalho ou null se não encontrar
+  pthread_mutex_lock(&mutexTerminados);
+  aux = pegaUmTrabalhoPorID(tId, terminados); // Retorna o trabalho ou null se não encontrar
+  pthread_mutex_unlock(&mutexTerminados);
   if (aux == NULL)
   {
-    aux = pegaUmTrabalhoPorID(tId, prontos, mutexProntos);
+    pthread_mutex_lock(&mutexProntos);
+    aux = pegaUmTrabalhoPorID(tId, prontos);
+    pthread_mutex_unlock(&mutexProntos);
     if (aux != NULL)
     {
       executa(aux);
     }
     else
     {
+      pthread_mutex_lock(&mutexProntos);
       aux = pegaUmTrabalho(prontos);
+      pthread_mutex_unlock(&mutexProntos);
+
       if (aux != NULL)
       {
         executa(aux);
@@ -185,4 +200,4 @@ tarefa*/
     return 1;
     printf("Sync\n");
   }
-}  
+}
