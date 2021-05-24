@@ -12,22 +12,8 @@
 
 ## Perguntas
 
-### PROGRAMA
-- Quais algoritmos são bons em aproveitar multithreads
-- Algoritmos recursivos servem como nota extra ? Como fatorial e somas sucessivas...
-### ESCALONAMENTO    
-- Só o escalonamento fifo serve?
-### MAKEFILE
-- Dá pra fazer um makefile pra rodar tudo os exemplos?
-### PDF
-- Qual discussão ele quer encima do desempenho, e como mede essas métricas?
-### PORMENORES
-- Fora os algoritmos, o que mais podemos fazer para os pontos extras?
-
 ## TO DO
-* fazer escalonamento de pilha
-* arrumar os mutex
-* Fazer o makefile
+* arrumar o erro de loop infinito
 * fazer o readme
 * fazer o pdf
 * fazer apresentação
