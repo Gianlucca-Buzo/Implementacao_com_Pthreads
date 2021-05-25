@@ -25,7 +25,7 @@ int main()
     switch (escolha)
     {
     case 1:
-        start(4, 0);
+        start(1, 0);
         //n = 3;
         printf("Digite o Valor do Fibonacci a ser calculado: ");
         scanf("%d", &n);
@@ -50,7 +50,7 @@ int main()
         }
         printf("\n");
 
-        start(4, 0);
+        start(1, 0);
 
         escalonamento.p = 0;
         escalonamento.c = 0;
@@ -85,12 +85,11 @@ void *fibo(void *dta)
     int *r = (int *)malloc(sizeof(int));
     struct Atrib a1, a2;
     int t1, t2;
-
     if (*n <= 2)
     {
         *r = 1;
     }
-    else
+    else if (*n <= 40)
     {
         n1 = (int *)malloc(sizeof(int));
         r1 = (int *)malloc(sizeof(int));
@@ -98,9 +97,11 @@ void *fibo(void *dta)
         *n1 = (*n) - 1;
         a1.p = 0;
         a1.c = *n1;
+        printf("n1 %d ", *n1);
         t1 = spawn(&a1, fibo, (void *)n1);
         n2 = (int *)malloc(sizeof(int));
         *n2 = *n - 2;
+        printf("n2 %d ", *n2);
         a2.p = 0;
         a1.c = *n2;
         t2 = spawn(&a2, fibo, (void *)n2);
@@ -113,12 +114,13 @@ void *fibo(void *dta)
         free(n1);
         free(n2);
     }
-    return r;
+
+    return (void*) r;
 }
 
 void *mergeSort(void *dta) //int *vetor, int posicaoInicio, int posicaoFim)
 {
-    int *vetor = (int *)(dta + (2 * sizeof(int)));
+    int *vetor = (int *)(sizeof(dta) + (2 * sizeof(int)));
     int *aux = (int *)dta;
     int posicaoInicio = aux[0];
     int posicaoFim = aux[1];

@@ -138,8 +138,7 @@ void finish(void)
   finaliza.store(1);
   for (int i = 0; i < quantidadeProcessadoresVirtuais; i++)
   {
-    pthread_join(processadoresVirtuais[i], NULL);
-    //printf("Finish\n");
+      pthread_join(processadoresVirtuais[i], NULL);
   }
 }
 
@@ -167,7 +166,7 @@ considerados os valores default para os atributos.*/
     prontos.push_front(novoTrabalho); //fila
     break;
   }
-   printf("spaw lib: %d \n", novoTrabalho->idTrabalho);
+  printf("spaw lib: %d \n", novoTrabalho->idTrabalho);
   pthread_mutex_unlock(&mutexProntos);
 
   return novoTrabalho->idTrabalho;
