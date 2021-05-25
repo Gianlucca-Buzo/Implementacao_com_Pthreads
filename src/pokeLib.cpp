@@ -166,7 +166,7 @@ considerados os valores default para os atributos.*/
     prontos.push_front(novoTrabalho); //fila
     break;
   }
-  printf("spaw lib: %d \n", novoTrabalho->idTrabalho);
+  // printf("spaw lib: %d \n", novoTrabalho->idTrabalho);
   pthread_mutex_unlock(&mutexProntos);
 
   return novoTrabalho->idTrabalho;
@@ -187,6 +187,7 @@ tarefa*/
 
   while (*res == NULL)
   {
+    // printf("sync\n");
     pthread_mutex_lock(&mutexTerminados);
     aux = pegaUmTrabalhoPorID(tId, terminados); // Retorna o trabalho ou null se não encontrar
     pthread_mutex_unlock(&mutexTerminados);

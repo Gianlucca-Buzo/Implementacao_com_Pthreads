@@ -6,16 +6,16 @@
 
 void *fibo(void *dta);
 void *mergeSort(void *dta);
-#define MAX 5
+#define MAX 3
 
 int main()
 {
     int escolha;
     int n, *r, id;
     Atrib escalonamento;
-     int *vetor = (int *)malloc((MAX + 2) * (sizeof(int)));
-        vetor[0] = 0;
-        vetor[1] = MAX;
+    int *vetor = (int *)malloc((MAX + 2) * (sizeof(int)));
+    vetor[0] = 0;
+    vetor[1] = MAX;
     printf("----Selecione o código----\n");
     printf("- 1 - Fibonacci\n");
     printf("- 2 - Merge Sort\n");
@@ -25,7 +25,7 @@ int main()
     switch (escolha)
     {
     case 1:
-        start(1, 0);
+        start(4, 1);
         //n = 3;
         printf("Digite o Valor do Fibonacci a ser calculado: ");
         scanf("%d", &n);
@@ -55,7 +55,7 @@ int main()
         escalonamento.p = 0;
         escalonamento.c = 0;
 
-        id = spawn(&escalonamento, mergeSort, vetor);
+        id = spawn(&escalonamento, mergeSort, (void*)vetor);
         printf("spaw ID main: %d \n", id);
         sync(id, (void **)&r);
         finish();
@@ -68,7 +68,7 @@ int main()
         }
         printf("\n");
         free(vetor);
-        free(r);
+       // free(r);
         break;
     default:
         printf("Voce digitou errado, seu bobao :(\n");
@@ -115,37 +115,48 @@ void *fibo(void *dta)
         free(n2);
     }
 
-    return (void*) r;
+    return (void *)r;
 }
 
 void *mergeSort(void *dta) //int *vetor, int posicaoInicio, int posicaoFim)
 {
-    int *vetor = (int *)(sizeof(dta) + (2 * sizeof(int)));
+    
+   // printf()
     int *aux = (int *)dta;
+    int *vetor = &aux[2];
+    // int *segPosicao = aux++;
+    //printf("aux 0 = %d aux 1 = %d\n",aux[0],aux[1]);
+    //printf("vetor = %d %d %d %d %d",vetor[0], vetor[1], vetor[2], vetor[3], vetor[4]);
     int posicaoInicio = aux[0];
     int posicaoFim = aux[1];
 
     struct Atrib a1, a2;
     int t1, t2;
     int *r = (int *)malloc(sizeof(int));
+    *r =1;
 
     int i, j, k, metadeTamanho, *vetorTemp;
-    if (posicaoInicio == posicaoFim)
-        return 0;
+    if (posicaoInicio == posicaoFim){
+        return (void *)1;
+    }
     metadeTamanho = (posicaoInicio + (posicaoFim)) / 2;
     aux[1] = metadeTamanho;
     //mergeSort(vetor, posicaoInicio, metadeTamanho);
     //mergeSort(dta);
+    //printf("a\n");
     t1 = spawn(&a1, mergeSort, (void *)dta);
+   // printf("b\n");
     sync(t1, (void **)&r);
+   // printf("c\n");
 
     aux[0] = metadeTamanho + 1;
     aux[1] = posicaoFim;
     //mergeSort(dta);
     t2 = spawn(&a2, mergeSort, (void *)dta);
+    // printf("d\n");
     sync(t2, (void **)&r);
     //mergeSort(vetor, metadeTamanho + 1, posicaoFim);
-    printf("R1 : %d\n", *r);
+    //printf("R1 : %d\n", *r);
     //free(r);
     i = posicaoInicio;
     j = metadeTamanho + 1;
@@ -170,6 +181,8 @@ void *mergeSort(void *dta) //int *vetor, int posicaoInicio, int posicaoFim)
             }
             else
             {
+               // printf("i = %d j = %d\n",i,j);
+               // printf("i = %d j = %d\n",vetor[i],vetor[j]);
                 if (vetor[i] < vetor[j])
                 {
                     vetorTemp[k] = vetor[i];
@@ -188,6 +201,9 @@ void *mergeSort(void *dta) //int *vetor, int posicaoInicio, int posicaoFim)
     for (i = posicaoInicio; i <= posicaoFim; i++)
     {
         vetor[i] = vetorTemp[i - posicaoInicio];
+        printf("aa %d ",vetor[i]);
     }
+    printf("\n");
     free(vetorTemp);
+    return (void *)1;
 }
