@@ -3,6 +3,7 @@
 #include "pokeLib.h"
 #include <stdlib.h>
 #include <iostream>
+#include <time.h> //clock(), CLOCKS_PER_SEC e clock_t 
 
 void *fibo(void *dta);
 void *mergeSort(void *dta);
@@ -10,6 +11,9 @@ void *mergeSort(void *dta);
 
 int main()
 {
+
+    clock_t t; //variável para armazenar tempo
+
     int escolha, termino, contador;
     int n, *r, id;
     Atrib escalonamento;
@@ -21,7 +25,7 @@ int main()
     printf("- 2 - Merge Sort\n");
     printf("--------------------------\n");
     scanf("%d", &escolha);
-
+    t = clock(); //armazena tempo
     switch (escolha)
     {
     case 1:
@@ -83,6 +87,8 @@ int main()
         break;
     }
 
+    t = clock() - t; //tempo final - tempo inicial
+     printf("Tempo de execucao: %lf", ((double)t)/((CLOCKS_PER_SEC/1000))); //conversão para double
     return 0;
 }
 
