@@ -23,100 +23,91 @@ int main()
     printf("\n----Selecione o código----\n");
     printf("- 1 - Fibonacci\n");
     printf("- 2 - Merge Sort\n");
-    printf("- 3 - Sair\n");
     printf("--------------------------\n");
     scanf("%d", &escolha);
 
-    while (escolha != 3)
+    printf("----Selecione o tipo de escalonamento----\n");
+    printf("- 0 - Fila (padrao)\n");
+    printf("- 1 - Pilha\n");
+    printf("-----------------------------------------\n");
+    scanf("%d", &tipoEscalonamento);
+
+    printf("----Digite a quantidade de Threads ----\n");
+    printf("-----------------------------------------\n");
+    scanf("%d", &numThreads);
+
+    if (numThreads <= 0)
     {
-
-        printf("----Selecione o tipo de escalonamento----\n");
-        printf("- 0 - Fila (padrao)\n");
-        printf("- 1 - Pilha\n");
-        printf("-----------------------------------------\n");
-        scanf("%d", &tipoEscalonamento);
-
-        printf("----Digite a quantidade de Threads ----\n");
-        printf("-----------------------------------------\n");
-        scanf("%d", &numThreads);
-
-        if(numThreads<=0){
-            numThreads = 1;
-        }
-
-        switch (escolha)
-        {
-        case 1:
-            //n = 3;
-            printf("Digite o Valor do Fibonacci a ser calculado: ");
-            scanf("%d", &n);
-            start(numThreads, tipoEscalonamento);
-            t = clock(); //armazena tempo
-            escalonamento.p = 0;
-            escalonamento.c = n;
-            id = spawn(&escalonamento, fibo, &n);
-            sync(id, (void **)&r);
-            finish();
-            //printf("fim");
-            printf("Fibonacci (%d) = %d \n", n, *r);
-            break;
-        case 2:
-            for (int i = 2; i < MAX + 2; i++)
-            {
-                vetor[i] = rand() % 100;
-            }
-
-            for (int i = 2; i < MAX + 2; i++)
-            {
-                printf("%d, ", vetor[i]);
-            }
-            printf("\n");
-
-            start(numThreads, tipoEscalonamento);
-            escalonamento.p = 0;
-            escalonamento.c = 0;
-            t = clock();
-            id = spawn(&escalonamento, mergeSort, (void *)vetor);
-            printf("spaw ID main: %d \n", id);
-            sync(id, (void **)&r);
-            finish();
-
-            //mergeSort(vetor);
-            printf("\n\n");
-            if (MAX % 2 == 0)
-            {
-                contador = 2;
-                termino = MAX + 2;
-            }
-            else
-            {
-                contador = 3;
-                termino = MAX + 3;
-            }
-            for (contador; contador < termino; contador++)
-            {
-                printf("%d, ", vetor[contador]);
-            }
-            printf("\n");
-            free(vetor);
-            // free(r);
-            break;
-        default:
-            printf("Voce digitou errado, seu bobao :(\n");
-            break;
-        }
-
-        free(r);                                                              //adicionei essa linha
-        t = clock() - t;                                                      //tempo final - tempo inicial
-        printf("Tempo de execucao: %lf\n", ((double)t) / ((CLOCKS_PER_SEC))); //conversão para double
-
-        printf("\n----Selecione o código----\n");
-        printf("- 1 - Fibonacci\n");
-        printf("- 2 - Merge Sort\n");
-        printf("- 3 - Sair\n");
-        printf("--------------------------\n");
-        scanf("%d", &escolha);
+        numThreads = 1;
     }
+
+    switch (escolha)
+    {
+    case 1:
+        //n = 3;
+        printf("Digite o Valor do Fibonacci a ser calculado: ");
+        scanf("%d", &n);
+        start(numThreads, tipoEscalonamento);
+        t = clock(); //armazena tempo
+        escalonamento.p = 0;
+        escalonamento.c = n;
+        id = spawn(&escalonamento, fibo, &n);
+        sync(id, (void **)&r);
+        finish();
+        //printf("fim");
+        printf("Fibonacci (%d) = %d \n", n, *r);
+        free(r);
+        break;
+    case 2:
+        for (int i = 2; i < MAX + 2; i++)
+        {
+            vetor[i] = rand() % 100;
+        }
+
+        for (int i = 2; i < MAX + 2; i++)
+        {
+            printf("%d, ", vetor[i]);
+        }
+        printf("\n");
+
+        start(numThreads, tipoEscalonamento);
+        escalonamento.p = 0;
+        escalonamento.c = 0;
+        t = clock();
+        id = spawn(&escalonamento, mergeSort, (void *)vetor);
+        printf("spaw ID main: %d \n", id);
+        sync(id, (void **)&r);
+        finish();
+
+        //mergeSort(vetor);
+        printf("\n\n");
+        if (MAX % 2 == 0)
+        {
+            contador = 2;
+            termino = MAX + 2;
+        }
+        else
+        {
+            contador = 3;
+            termino = MAX + 3;
+        }
+        for (contador; contador < termino; contador++)
+        {
+            printf("%d, ", vetor[contador]);
+        }
+        printf("\n");
+        free(vetor);
+        // free(r);
+        break;
+    default:
+        printf("Voce digitou errado, seu bobao :(\n");
+        break;
+    }
+
+   // free(r);                                                              //adicionei essa linha
+    t = clock() - t;                                                      //tempo final - tempo inicial
+    printf("Tempo de execucao: %lf\n", ((double)t) / ((CLOCKS_PER_SEC))); //conversão para double
+
     return 0;
 }
 
