@@ -1,7 +1,7 @@
 # Trabalho_Pratico-Implementacao_com_Pthreads
 #### Membros do grupo: Darlei Matheus Schmegel, Dauan Ghisleni Zolinger, Gianlucca de Mendonça Buzô, Heitor Felipe Matozo dos Santos e Letícia Pegoraro Garcez.
 
-[Acesse o vídeo de apresentação do trabalho](https://www.youtube.com/watch?v=9GyFEU691D4) **Em breve**
+[Acesse o vídeo de apresentação do trabalho](https://www.youtube.com/watch?v=9GyFEU691D4) 
 
 ### O que é este projeto?
 Este projeto se trata de uma biblioteca com suporte de execução de threads utilizando o modelo *n x m* para uma linguagem concorrente baseada na criação de tarefas utilizando a linguagem C++ e a biblioteca de threads Pthreads.
