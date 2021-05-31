@@ -20,7 +20,7 @@ O projeto pode ser executado através de linha de comando o comando `make` que f
    <code class="hljs language-shell">$ ./main</code>
 
 ### Especificações do programa de exemplo desenvolvido
-O algoritmo implementado no arquivo `main.cpp` se trata de um menu onde é possível selecionar um entre dois algorimot para execução, sendo um deles o cálculo de um Fibonacci, e o segundo a execução de um algortimo de ordenação *merge sort*. Após selecionar o algoritmo que deseja executar, o usuário deve selecionar um entre dois tipos de escalonamento implementados, bem como a quantidade de threads que deseja utilizar para realizar a execução do algoritmo.
+O algoritmo implementado no arquivo `main.cpp` se trata de um menu onde é possível selecionar um entre dois algoritmo para execução, sendo um deles o cálculo de um Fibonacci, e o segundo a execução de um algortimo de ordenação *merge sort*. Após selecionar o algoritmo que deseja executar, o usuário deve selecionar um entre dois tipos de escalonamento implementados, bem como a quantidade de threads que deseja utilizar para realizar a execução do algoritmo.
 
 Como políticas de escalonamento foram implementadas as lógicas de *FIFO (First-in-first-out)* e *LIFO (Last-in-first-out)*, sendo o escalonamento *FIFO* a opção padrão. 
 
